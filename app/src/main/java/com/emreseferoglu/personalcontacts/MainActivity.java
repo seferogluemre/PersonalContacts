@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     TabLayout tabLayout;
     ViewPager viewPager;
     ImageView i1;
+    EditText etName, etPhone, etEmail, etAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +56,10 @@ public class MainActivity extends AppCompatActivity {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             @SuppressLint("ResourceType") View view = getLayoutInflater().inflate(R.drawable.form_dialog, null);
 
-            EditText etName = view.findViewById(R.id.et_name);
-            EditText etPhone = view.findViewById(R.id.et_phone);
-            EditText etEmail = view.findViewById(R.id.et_email);
-            EditText etAddress = view.findViewById(R.id.et_address);
+            etName = view.findViewById(R.id.et_name);
+            etPhone = view.findViewById(R.id.et_phone);
+            etEmail = view.findViewById(R.id.et_email);
+            etAddress = view.findViewById(R.id.et_address);
 
             builder.setView(view);
             builder.setTitle("Yeni Kişi");
@@ -68,22 +69,20 @@ public class MainActivity extends AppCompatActivity {
                 String email = etEmail.getText().toString();
                 String address = etAddress.getText().toString();
 
-                if(!name.isEmpty() && !phone.isEmpty()){
-                    if(email.isEmpty() || address.isEmpty()){
-                        database.addPerson(name,phone);
+                if (!name.isEmpty() && !phone.isEmpty()) {
+                    if (email.isEmpty() || address.isEmpty()) {
+                        database.addPerson(name, phone);
                         return;
                     }
-                    database.addPerson(name,phone,email,address);
+                    database.addPerson(name, phone, email, address);
                     database.getReadableDatabase(); // onCreate tetiklenmesini garanti eder
                 }
                 Toast.makeText(this, "Kişi eklendi...", Toast.LENGTH_SHORT).show();
-                database.getAllPersons();
             });
 
             builder.setNegativeButton("İptal", (dialog, which) -> dialog.dismiss());
             builder.show();
         });
-
 
 
     }

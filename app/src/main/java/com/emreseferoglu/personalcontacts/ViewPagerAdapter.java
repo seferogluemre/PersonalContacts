@@ -7,6 +7,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
 
 public class ViewPagerAdapter extends FragmentPagerAdapter {
+
     public ViewPagerAdapter(@NonNull FragmentManager fm) {
         super(fm);
     }
@@ -32,6 +33,10 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
     @Nullable
     @Override
     public CharSequence getPageTitle(int position) {
-        return "Sekme " + (position + 1);
+        if(position==1){
+            return "Acil Kişiler";
+        }else{
+            return "Kişiler";
+        }
     }
 }

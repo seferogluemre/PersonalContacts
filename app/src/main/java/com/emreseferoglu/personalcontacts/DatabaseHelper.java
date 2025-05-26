@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,12 +21,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String createTableQuerySql = "CREATE TABLE IF NOT EXISTS contacts (id INTEGER PRIMARY KEY AUTOINCREMENT, person_name text NOT NULL,phone_number text NOT NULL CHECK(length(phone_number) = 11),email text, address text,created_at TEXT DEFAULT CURRENT_TIMESTAMP)";
+        String createTableQuerySql = "CREATE TABLE IF NOT EXISTS contacts (id INTEGER PRIMARY KEY AUTOINCREMENT, person_name TEXT NOT NULL, phone_number TEXT NOT NULL CHECK(length(phone_number) = 11), email TEXT, address TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP)";
         db.execSQL(createTableQuerySql);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        // Burada upgrade işlemlerini yönetebilirsin
         db.execSQL("ALTER TABLE contacts ADD COLUMN email TEXT");
         onCreate(db);
     }
@@ -62,12 +64,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public List<Person> getAllPersons() {
         List<Person> persons = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
-        Cursor cursor = db.rawQuery("SELECT * FROM contacts", null);
+        Cursor cursor = db.rawQuery("SELECT * FROM contacts ORDER BY created_at DESC", null);
 
         if (cursor.moveToFirst()) {
             do {
                 String name = cursor.getString(cursor.getColumnIndexOrThrow("person_name"));
                 String phone = cursor.getString(cursor.getColumnIndexOrThrow("phone_number"));
+
+                // Eğer email ve address'i de göstermek istersen Person sınıfına ekle
+                // String email = cursor.getString(cursor.getColumnIndexOrThrow("email"));
+                // String address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
 
                 persons.add(new Person(name, phone));
             } while (cursor.moveToNext());
@@ -78,5 +84,4 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return persons;
     }
-
 }
