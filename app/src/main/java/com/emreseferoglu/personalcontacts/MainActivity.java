@@ -45,7 +45,6 @@ public class MainActivity extends AppCompatActivity {
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
 
-
         try {
             database = new DatabaseHelper(getApplicationContext());
         } catch (Exception error) {
@@ -75,15 +74,15 @@ public class MainActivity extends AppCompatActivity {
                         return;
                     }
                     database.addPerson(name,phone,email,address);
+                    database.getReadableDatabase(); // onCreate tetiklenmesini garanti eder
                 }
                 Toast.makeText(this, "Kişi eklendi...", Toast.LENGTH_SHORT).show();
+                database.getPersons();
             });
 
             builder.setNegativeButton("İptal", (dialog, which) -> dialog.dismiss());
             builder.show();
         });
-
-
 
 
 

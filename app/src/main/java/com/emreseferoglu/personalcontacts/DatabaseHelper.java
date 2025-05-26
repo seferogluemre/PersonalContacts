@@ -73,13 +73,13 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
-                persons.add(cursor.getString(cursor.getColumnIndexOrThrow("name")));
+                persons.add(cursor.getString(cursor.getColumnIndexOrThrow("person_name")));
+                persons.add(cursor.getString(cursor.getColumnIndexOrThrow("phone_number")));
             } while (cursor.moveToNext());
         }
 
         cursor.close();
         db.close();
-        System.out.println(persons);
         return persons;
     }
 }
