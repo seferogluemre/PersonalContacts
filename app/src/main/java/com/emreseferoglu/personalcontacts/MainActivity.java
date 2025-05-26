@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     database.getReadableDatabase(); // onCreate tetiklenmesini garanti eder
                 }
                 Toast.makeText(this, "Kişi eklendi...", Toast.LENGTH_SHORT).show();
-                database.getPersons();
+                database.getAllPersons();
             });
 
             builder.setNegativeButton("İptal", (dialog, which) -> dialog.dismiss());

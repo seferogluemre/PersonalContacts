@@ -66,20 +66,24 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-    public List<String> getPersons() {
-        List<String> persons = new ArrayList<>();
+    public List<Person> getAllPersons() {
+        List<Person> persons = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery("SELECT * FROM contacts", null);
 
         if (cursor.moveToFirst()) {
             do {
-                persons.add(cursor.getString(cursor.getColumnIndexOrThrow("person_name")));
-                persons.add(cursor.getString(cursor.getColumnIndexOrThrow("phone_number")));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow("person_name"));
+                String phone = cursor.getString(cursor.getColumnIndexOrThrow("phone_number"));
+
+                persons.add(new Person(name, phone));
             } while (cursor.moveToNext());
         }
 
         cursor.close();
         db.close();
+
         return persons;
     }
+
 }

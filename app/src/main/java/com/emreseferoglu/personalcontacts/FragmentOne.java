@@ -22,18 +22,15 @@ public class FragmentOne extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_one, container, false);
+
         listView = view.findViewById(R.id.listViewContacts);
         database = new DatabaseHelper(getContext());
 
-        List<String> contacts = database.getPersons();
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                getContext(),
-                android.R.layout.simple_list_item_1,
-                contacts
-        );
+        List<Person> persons = database.getAllPersons();
+        PersonAdapter adapter = new PersonAdapter(getContext(), persons);
         listView.setAdapter(adapter);
+
         return view;
     }
-
 }
+
