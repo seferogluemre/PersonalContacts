@@ -66,7 +66,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
-
     public List<String> getPersons() {
         List<String> persons = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
