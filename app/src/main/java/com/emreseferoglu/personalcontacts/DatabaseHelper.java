@@ -35,8 +35,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public void addPerson(String name, String phone, String email, String address) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        try {
+        try (SQLiteDatabase db = this.getWritableDatabase()) {
             String sql = "INSERT INTO contacts (person_name, phone_number, email, address) VALUES (?, ?, ?, ?)";
             SQLiteStatement statement = db.compileStatement(sql);
             statement.bindString(1, name);
@@ -57,8 +56,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             statement.executeInsert();
         } catch (Exception e) {
             Log.e("DB_ERROR", "addPerson error: " + e.getMessage());
-        } finally {
-            db.close();
         }
     }
 
