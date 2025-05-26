@@ -1,0 +1,86 @@
+package com.emreseferoglu.personalcontacts;
+
+import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+import android.database.sqlite.SQLiteStatement;
+import android.health.connect.datatypes.StepsRecord;
+import android.util.Log;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DatabaseHelper extends SQLiteOpenHelper {
+
+    private static final String DB_NAME = "PersonelContacts";
+    private static final int DATABASE_VERSION = 1;
+    private static final String TABLE_NAME = "contacts";
+
+    public DatabaseHelper(Context context) {
+        super(context, DB_NAME, null, DATABASE_VERSION);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase db) {
+        String createTableQuerySql = "CREATE TABLE IF NOT EXISTS contacts (id INTEGER PRIMARY KEY AUTOINCREMENT, person_name text NOT NULL,phone_number text NOT NULL CHECK(length(phone_number) = 11),email text, address text,created_at TEXT DEFAULT CURRENT_TIMESTAMP)";
+        db.execSQL(createTableQuerySql);
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("ALTER TABLE contacts ADD COLUMN email TEXT");
+        onCreate(db);
+    }
+
+    public void addPerson(String name, String phone) {
+        addPerson(name, phone, null, null);
+    }
+
+    public void addPerson(String name, String phone, String email, String address) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        try {
+            String sql = "INSERT INTO contacts (person_name, phone_number, email, address) VALUES (?, ?, ?, ?)";
+            SQLiteStatement statement = db.compileStatement(sql);
+            statement.bindString(1, name);
+            statement.bindString(2, phone);
+
+            if (email != null) {
+                statement.bindString(3, email);
+            } else {
+                statement.bindNull(3);
+            }
+
+            if (address != null) {
+                statement.bindString(4, address);
+            } else {
+                statement.bindNull(4);
+            }
+
+            statement.executeInsert();
+        } catch (Exception e) {
+            Log.e("DB_ERROR", "addPerson error: " + e.getMessage());
+        } finally {
+            db.close();
+        }
+    }
+
+
+    public List<String> getPersons() {
+        List<String> persons = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM contacts", null);
+
+        if (cursor.moveToFirst()) {
+            do {
+                persons.add(cursor.getString(cursor.getColumnIndexOrThrow("name")));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        System.out.println(persons);
+        return persons;
+    }
+}
