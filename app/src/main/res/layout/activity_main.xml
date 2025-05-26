@@ -8,16 +8,6 @@
     android:background="#F7F8FA"
     tools:context=".MainActivity" >
 
-    <ImageView
-        android:id="@+id/imageView2"
-        android:layout_width="36dp"
-        android:layout_height="35dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="#03A9F4"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/baseline_add_24" />
 
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/viewPager"
