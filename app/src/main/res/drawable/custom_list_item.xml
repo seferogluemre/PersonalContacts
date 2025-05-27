@@ -9,14 +9,26 @@
         android:id="@+id/textName"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
+        android:text="İsim"
         android:textSize="16sp"
-        android:text="İsim" />
+        android:textStyle="bold" />
 
     <TextView
         android:id="@+id/textPhone"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColor="#888888"
-        android:text="Telefon" />
+        android:text="Telefon"
+        android:textColor="#888888" />
+
+
+    <ImageView
+        android:id="@+id/iconAddEmergency"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:layout_alignParentEnd="true"
+        android:layout_centerVertical="true"
+        android:contentDescription="Acil kişiye ekle"
+        android:padding="5dp"
+        android:src="@drawable/baseline_emergency_24" />
+
 </LinearLayout>

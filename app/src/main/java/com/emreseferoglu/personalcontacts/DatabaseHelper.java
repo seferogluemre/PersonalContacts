@@ -13,7 +13,7 @@ import java.util.List;
 public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DB_NAME = "PersonelContacts";
-    private static final int DATABASE_VERSION = 1;
+    private static final int DATABASE_VERSION = 2;
 
     public DatabaseHelper(Context context) {
         super(context, DB_NAME, null, DATABASE_VERSION);
@@ -22,15 +22,42 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String createTableQuerySql = "CREATE TABLE IF NOT EXISTS contacts (id INTEGER PRIMARY KEY AUTOINCREMENT, person_name TEXT NOT NULL, phone_number TEXT NOT NULL CHECK(length(phone_number) = 11), email TEXT, address TEXT, created_at TEXT DEFAULT CURRENT_TIMESTAMP)";
+        String createEmergencyTableQuery = "CREATE TABLE IF NOT EXISTS emergency_contacts (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "person_id INTEGER NOT NULL, " +
+                "added_at TEXT DEFAULT CURRENT_TIMESTAMP, " +
+                "FOREIGN KEY (person_id) REFERENCES contacts(id)" +
+                ")";
+
         db.execSQL(createTableQuerySql);
+        db.execSQL(createEmergencyTableQuery);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        // Burada upgrade işlemlerini yönetebilirsin
-        db.execSQL("ALTER TABLE contacts ADD COLUMN email TEXT");
-        onCreate(db);
+        if (!isColumnExists(db, "contacts", "email")) {
+            db.execSQL("ALTER TABLE contacts ADD COLUMN email TEXT");
+        }
     }
+
+    private boolean isColumnExists(SQLiteDatabase db, String tableName, String columnName) {
+        Cursor cursor = null;
+        try {
+            cursor = db.rawQuery("PRAGMA table_info(" + tableName + ")", null);
+            while (cursor.moveToNext()) {
+                String currentColumn = cursor.getString(cursor.getColumnIndexOrThrow("name"));
+                if (currentColumn.equals(columnName)) {
+                    return true;
+                }
+            }
+            return false;
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+    }
+
 
     public void addPerson(String name, String phone) {
         addPerson(name, phone, null, null);
@@ -68,6 +95,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         if (cursor.moveToFirst()) {
             do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow("id"));
                 String name = cursor.getString(cursor.getColumnIndexOrThrow("person_name"));
                 String phone = cursor.getString(cursor.getColumnIndexOrThrow("phone_number"));
 
@@ -75,7 +103,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 // String email = cursor.getString(cursor.getColumnIndexOrThrow("email"));
                 // String address = cursor.getString(cursor.getColumnIndexOrThrow("address"));
 
-                persons.add(new Person(name, phone));
+                persons.add(new Person(name, phone, id));
             } while (cursor.moveToNext());
         }
 
@@ -84,4 +112,15 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         return persons;
     }
+
+    public void addToEmergencyContacts(int personId) {
+        SQLiteDatabase database = this.getWritableDatabase();
+        String sql = "insert into emergency_contacts (person_id) values (?)";
+        SQLiteStatement statement = database.compileStatement(sql);
+        statement.bindLong(1, personId);
+        statement.executeInsert();
+        database.close();
+    }
+
+
 }
